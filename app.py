@@ -114,10 +114,10 @@ with col_grafico1:
             radialaxis=dict(
                 visible=True, 
                 range=[0, 1000],
-                tickfont=dict(color='black')  # <-- Define os números como pretos
+                tickfont=dict(color='black')  #
             ),
             angularaxis=dict(
-                tickfont=dict(color='orange')  # <-- (Opcional) Define os nomes das categorias como pretos
+                tickfont=dict(color='orange')  
             )
         ),
         showlegend=True,
@@ -323,8 +323,8 @@ with col_extra2:
     st.plotly_chart(fig_cob, use_container_width=True)
     
 st.write("---")
-st.subheader("Correlação: Esforço Financeiro vs Cobertura Absoluta")
-st.caption("Analisa se um maior esforço financeiro reflete em uma maior entrega real de conteúdo (Cobertura Absoluta).")
+st.subheader("Correlação: Esforço Financeiro vs Cobertura de Cursos")
+st.caption("Analisa se um maior esforço financeiro reflete em uma maior entrega real de conteúdo.")
 
 df_corr = df.copy()
 df_corr['Categoria'] = df_corr['MASCARA'].apply(classificar_ponto)
