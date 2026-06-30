@@ -26,26 +26,20 @@ df_escolas = df[df['MASCARA'] != benchmark_name]
 benchmark_medio = df_escolas.mean(numeric_only=True)
 
 
-# ==========================================
-# CABEÇALHO E SELEÇÃO (NO TOPO)
-# ==========================================
 st.title("📊 Dashboard de Desempenho ENEM")
 
 # Filtro por MASCARA movido para o topo do Dashboard
 mascara_selecionada = st.selectbox(
-    "Selecione uma MÁSCARA para visualizar em destaque nos gráficos:",
+    "Selecione uma escola para visualizar em destaque nos gráficos:",
     options=df_escolas['MASCARA'].unique()
 )
 
 # Filtrar os dados da máscara selecionada
 dados_selecionados = df_escolas[df_escolas['MASCARA'] == mascara_selecionada].iloc[0]
 
-st.markdown(f"**Comparando:** `{mascara_selecionada}` 🆚 `{benchmark_name}` 🆚 `Média das Demais Máscaras`")
+st.markdown(f"**Comparando:** `{mascara_selecionada}` 🆚 `{benchmark_name}` 🆚 `Média das Demais Escolas`")
 st.divider()
 
-# ==========================================
-# KPIs
-# ==========================================
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
@@ -105,7 +99,7 @@ with col_grafico1:
         r=[benchmark_medio['Media_MEDIA_GLOBAL'], benchmark_medio['Media_MEDIA_OBJETIVAS'], benchmark_medio['Media_NU_NOTA_REDACAO']],
         theta=categorias,
         fill='toself',
-        name='Média das Demais Máscaras',
+        name='Média das Demais Escolas',
         line_color='green'
     ))
     
@@ -126,21 +120,21 @@ with col_grafico1:
     st.plotly_chart(fig_radar, use_container_width=True)
 
 with col_grafico2:
-    st.subheader("Custo vs Média Global (Todas as Máscaras)")
+    st.subheader("Custo vs Média Global (Todas as Escolas)")
     
     def classificar_ponto(nome):
         if nome == mascara_selecionada:
-            return "Máscara Selecionada"
+            return "Escola Selecionada"
         elif nome == benchmark_name:
             return "Benchmark Público"
         else:
-            return "Outras Máscaras"
+            return "Outras Escolas"
             
     df_plot = df.copy()
     df_plot['Categoria'] = df_plot['MASCARA'].apply(classificar_ponto)
     
     # Ordenar para que a selecionada e o benchmark fiquem visíveis por cima
-    df_plot['Ordem'] = df_plot['Categoria'].map({"Máscara Selecionada": 2, "Benchmark Público": 1, "Outras Máscaras": 0})
+    df_plot['Ordem'] = df_plot['Categoria'].map({"Escola Selecionada": 2, "Benchmark Público": 1, "Outras Escolas": 0})
     df_plot = df_plot.sort_values('Ordem')
     
     fig_scatter = px.scatter(
@@ -151,9 +145,9 @@ with col_grafico2:
         size="NUM_ALUNOS",
         hover_name="MASCARA",
         color_discrete_map={
-            "Máscara Selecionada": "blue",
+            "Escola Selecionada": "blue",
             "Benchmark Público": "red",
-            "Outras Máscaras": "lightgray"
+            "Outras Escolas": "lightgray"
         },
         labels={"MENSALIDADE": "Mensalidade (R$)", "Media_MEDIA_GLOBAL": "Média Global"}
     )
@@ -175,8 +169,8 @@ with col_inferior1:
     # Legenda manual ajustada
     st.markdown(
         "**Legenda:** "
-        "🟦 Máscara Selecionada | "
-        "⬜ Outras Máscaras"
+        "🟦 Escola Selecionada | "
+        "⬜ Outras Escolas"
     )
 
     df_todas = df.copy()
@@ -217,7 +211,7 @@ with col_inferior1:
     st.plotly_chart(fig_bar, use_container_width=True)
     
 with col_inferior2:
-    st.subheader("Ranking de Média Global (Todas as Máscaras)")
+    st.subheader("Ranking de Média Global (Todas as Escolas)")
     
     # Prepara os dados ranqueados
     df_ranking = df.sort_values(by="Media_MEDIA_GLOBAL", ascending=False)
@@ -230,11 +224,11 @@ with col_inferior2:
         y="Media_MEDIA_GLOBAL",
         color="Categoria",
         color_discrete_map={
-            "Máscara Selecionada": "blue",
+            "Escola Selecionada": "blue",
             "Benchmark Público": "red",
-            "Outras Máscaras": "lightgray"
+            "Outras Escolas": "lightgray"
         },
-        labels={"MASCARA": "MÁSCARA", "Media_MEDIA_GLOBAL": "Média Global"}
+        labels={"MASCARA": "Escola", "Media_MEDIA_GLOBAL": "Média Global"}
     )
     
     fig_ranking.update_layout(
@@ -242,7 +236,6 @@ with col_inferior2:
         margin=dict(t=30),
         xaxis_title="",
         showlegend=False,
-        # FORÇA A ORDENAÇÃO DESCENDENTE IGNORANDO O AGRUPAMENTO POR COR
         xaxis={'categoryorder': 'total descending'} 
     )
     st.plotly_chart(fig_ranking, use_container_width=True)
@@ -253,9 +246,9 @@ st.header("Análises Adicionais: Perfil de Notas e Entrega")
 
 st.markdown(
     "**Legenda:** "
-    "🟦 Máscara Selecionada | "
+    "🟦 Escola Selecionada | "
     "🟥 Benchmark Público | "
-    "⬜ Outras Máscaras"
+    "⬜ Outras Escolas"
 )
 
 col_extra1, col_extra2 = st.columns(2)
@@ -270,7 +263,7 @@ with col_extra1:
     df_extra = df.copy()
     df_extra['Categoria'] = df_extra['MASCARA'].apply(classificar_ponto)
     
-    df_extra['Ordem'] = df_extra['Categoria'].map({"Máscara Selecionada": 2, "Benchmark Público": 1, "Outras Máscaras": 0})
+    df_extra['Ordem'] = df_extra['Categoria'].map({"Escola Selecionada": 2, "Benchmark Público": 1, "Outras Escolas": 0})
     df_extra = df_extra.sort_values('Ordem')
     
     fig_obj_red = px.scatter(
@@ -281,9 +274,9 @@ with col_extra1:
         size="NUM_ALUNOS",
         hover_name="MASCARA",
         color_discrete_map={
-            "Máscara Selecionada": "blue",
+            "Escola Selecionada": "blue",
             "Benchmark Público": "red",
-            "Outras Máscaras": "lightgray"
+            "Outras Escolas": "lightgray"
         },
         labels={
             "Media_MEDIA_OBJETIVAS": "Média nas Provas Objetivas", 
@@ -308,9 +301,9 @@ with col_extra2:
         y="TAXA_COBERTURA_PCT",
         color="Categoria",
         color_discrete_map={
-            "Máscara Selecionada": "blue",
+            "Escola Selecionada": "blue",
             "Benchmark Público": "red",
-            "Outras Máscaras": "lightgray"
+            "Outras Escolas": "lightgray"
         },
         labels={"MASCARA": "", "TAXA_COBERTURA_PCT": "Taxa de Cobertura (%)"}
     )
@@ -329,7 +322,7 @@ st.caption("Analisa se um maior esforço financeiro reflete em uma maior entrega
 df_corr = df.copy()
 df_corr['Categoria'] = df_corr['MASCARA'].apply(classificar_ponto)
 
-df_corr['Ordem'] = df_corr['Categoria'].map({"Máscara Selecionada": 2, "Benchmark Público": 1, "Outras Máscaras": 0})
+df_corr['Ordem'] = df_corr['Categoria'].map({"Escola Selecionada": 2, "Benchmark Público": 1, "Outras Escolas": 0})
 df_corr = df_corr.sort_values('Ordem')
 
 fig_corr = px.scatter(
@@ -340,9 +333,9 @@ fig_corr = px.scatter(
     size="NUM_ALUNOS", 
     hover_name="MASCARA",
     color_discrete_map={
-        "Máscara Selecionada": "blue",
+        "Escola Selecionada": "blue",
         "Benchmark Público": "red",
-        "Outras Máscaras": "lightgray"
+        "Outras Escolas": "lightgray"
     },
     labels={
         "NUM_CURSOS_COBERTOS": "Cobertura de cursos", 
@@ -354,4 +347,4 @@ fig_corr.update_layout(margin=dict(l=20, r=20, t=30, b=20), showlegend=False)
 st.plotly_chart(fig_corr, use_container_width=True)
 
 # Rodapé com a fonte de dados descaracterizada
-st.caption(f"**Fonte dos dados da máscara selecionada:** {dados_selecionados['FONTE']}")
+st.caption(f"**Fonte dos dados da escola selecionada:** {dados_selecionados['FONTE']}")
