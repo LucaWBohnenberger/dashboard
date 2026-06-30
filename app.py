@@ -110,12 +110,20 @@ with col_grafico1:
     ))
     
     fig_radar.update_layout(
-        polar=dict(radialaxis=dict(visible=True, range=[0, 1000])),
+        polar=dict(
+            radialaxis=dict(
+                visible=True, 
+                range=[0, 1000],
+                tickfont=dict(color='black')  # <-- Define os números como pretos
+            ),
+            angularaxis=dict(
+                tickfont=dict(color='orange')  # <-- (Opcional) Define os nomes das categorias como pretos
+            )
+        ),
         showlegend=True,
         margin=dict(l=40, r=40, t=40, b=40)
     )
     st.plotly_chart(fig_radar, use_container_width=True)
-
 
 with col_grafico2:
     st.subheader("Custo vs Média Global (Todas as Máscaras)")
